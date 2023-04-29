@@ -980,6 +980,11 @@ let blackKeysData = [
     'Backspace', 'Tab', 'Del', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt', '▲', '◄', '►', '▼'
 ]
 
+let state = {
+    language: "eng",
+    case: "lowerCase",
+};
+
 // create wrapper 
 let wrapper = document.createElement('div');
 wrapper.className = "wrapper";
@@ -995,7 +1000,10 @@ keyboard.className = "keyboard";
 wrapper.append(keyboard);
 document.body.append(wrapper);
 
+let pressedKeys = [];
+
 let renderKeyboard = () => {
+    keyboard.innerHTML = '';
     for (let i = 0; i < keyData.length; i++) {
         let keyboard__row = document.createElement('div');
         keyboard__row.className = "keyboard__row";
@@ -1005,35 +1013,73 @@ let renderKeyboard = () => {
             if (blackKeysData.includes(keyData[i][j].eng.lowerCase)) {
                 key.classList.add('key_black')
             }
-            key.innerText = `${keyData[i][j].eng.lowerCase}`
-            keyboard__row.append(key);
+            language = state.language;
+            if (language == 'eng' && state.case == "lowerCase") {
+                key.innerText = keyData[i][j].eng.lowerCase;
+                keyboard__row.append(key);
+            } else if (language == 'ru' && state.case == "lowerCase") {
+                key.innerText = keyData[i][j].ru.lowerCase;
+                keyboard__row.append(key);
+            } else if (language == 'eng' && state.case == "upperCase") {
+                key.innerText = keyData[i][j].eng.upperCase;
+                keyboard__row.append(key);
+            } else if (language == 'ru' && state.case == "upperCase") {
+                key.innerText = keyData[i][j].ru.upperCase;
+                keyboard__row.append(key);
+            }
         }
         keyboard.append(keyboard__row);
     }
 }
 renderKeyboard();
 
-let lightActiveKey = () => {
+let addLightKey = () => {
     document.addEventListener('keydown', (e) => {
         let activeKey = document.querySelector(`.${e.code}`);
         activeKey.classList.add('key_active');
-        console.log(e.code);
     })
 }
-lightActiveKey();
+addLightKey();
 
 let removeLightKey = () => {
     document.addEventListener('keyup', (e) => {
         let activeKey = document.querySelector(`.${e.code}`);
         activeKey.classList.remove('key_active');
-        console.log('отжал');
     })
 }
 removeLightKey();
 
-/* let isShiftclicked = (event) => {
-    if (event.code === '')
+
+
+let isKeyActive = () => {
+    
+    document.addEventListener('keydown', (e) => {
+        pressedKeys.push(e.code);
+       console.log(pressedKeys)
+    })
+    document.addEventListener('keyup', (e) => {
+        pressedKeys.pop();
+       console.log(pressedKeys)
+    })
+    
 }
- */
+
+let switchLanguage = () => {
+    document.addEventListener('keyup', (e) => {
+        if (e.code == "ShiftLeft" || e.code == "AltLeft") {
+            isKeyActive();
+            if (pressedKeys.includes('ShiftLeft') && pressedKeys.includes("AltLeft")) {
+                state.language == "ru" ? state.language = "eng" : state.language = "ru";
+                renderKeyboard()
+                pressedKeys = [];
+                console.log(state.language);
+            }
+        }
+    })
+}
+switchLanguage();
+
+
+
 
 
