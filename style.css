@@ -4,6 +4,11 @@
     margin: 0 auto;
 }
 
+.textarea {
+    width: 1078px;
+    height: 250px;
+}
+
 .keyboard {
     padding: 10px;
     display: flex;
@@ -28,6 +33,7 @@
     justify-content: center;
     align-items: center;
     background-color: #2b4c4e;
+    transition: all 0.2s;
 }
 
 .key_black {
@@ -35,8 +41,14 @@
     color: white;
 }
 
+.key_active {
+    background-color: #78c3ff;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
 .key:hover {
-    background-color: darkorchid;
+    background-color: #885899;
     transition: all 1s;
 }
 

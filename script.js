@@ -984,6 +984,11 @@ let blackKeysData = [
 let wrapper = document.createElement('div');
 wrapper.className = "wrapper";
 
+// create textarea
+let textarea = document.createElement('textarea');
+textarea.className = "textarea";
+wrapper.append(textarea);
+
 //create keyboard body
 let keyboard = document.createElement('div');
 keyboard.className = "keyboard";
@@ -997,10 +1002,10 @@ let renderKeyboard = () => {
         for (let j = 0; j < keyData[i].length; j++) {
             let key = document.createElement('span');
             key.className = `key ${keyData[i][j].keyCode}`;
-            if (blackKeysData.includes(keyData[i][j].ru.lowerCase)) {
+            if (blackKeysData.includes(keyData[i][j].eng.lowerCase)) {
                 key.classList.add('key_black')
             }
-            key.innerText = `${keyData[i][j].ru.lowerCase}`
+            key.innerText = `${keyData[i][j].eng.lowerCase}`
             keyboard__row.append(key);
         }
         keyboard.append(keyboard__row);
@@ -1008,13 +1013,27 @@ let renderKeyboard = () => {
 }
 renderKeyboard();
 
-/* let lightActiveKey = () => {
+let lightActiveKey = () => {
     document.addEventListener('keydown', (e) => {
-
+        let activeKey = document.querySelector(`.${e.code}`);
+        activeKey.classList.add('key_active');
+        console.log(e.code);
     })
 }
+lightActiveKey();
+
+let removeLightKey = () => {
+    document.addEventListener('keyup', (e) => {
+        let activeKey = document.querySelector(`.${e.code}`);
+        activeKey.classList.remove('key_active');
+        console.log('отжал');
+    })
+}
+removeLightKey();
+
+/* let isShiftclicked = (event) => {
+    if (event.code === '')
+}
  */
-
-
 
 
