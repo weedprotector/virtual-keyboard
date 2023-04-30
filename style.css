@@ -9,6 +9,10 @@
     height: 250px;
 }
 
+.description {
+    margin-top: 20px;
+}
+
 .keyboard {
     padding: 10px;
     display: flex;

@@ -983,6 +983,7 @@ let blackKeysData = [
 let state = {
     language: "eng",
     case: "lowerCase",
+    caps: false
 };
 
 // create wrapper 
@@ -1000,9 +1001,14 @@ keyboard.className = "keyboard";
 wrapper.append(keyboard);
 document.body.append(wrapper);
 
+let description = document.createElement('div');
+description.className = "description"
+description.innerText = "LShift + LAlt для смены языка\n\n Система - Windows";
+wrapper.append(description);
+
 let pressedKeys = [];
 
-let renderKeyboard = () => {
+const renderKeyboard = () => {
     keyboard.innerHTML = '';
     for (let i = 0; i < keyData.length; i++) {
         let keyboard__row = document.createElement('div');
@@ -1016,70 +1022,121 @@ let renderKeyboard = () => {
             language = state.language;
             if (language == 'eng' && state.case == "lowerCase") {
                 key.innerText = keyData[i][j].eng.lowerCase;
-                keyboard__row.append(key);
             } else if (language == 'ru' && state.case == "lowerCase") {
                 key.innerText = keyData[i][j].ru.lowerCase;
-                keyboard__row.append(key);
             } else if (language == 'eng' && state.case == "upperCase") {
                 key.innerText = keyData[i][j].eng.upperCase;
-                keyboard__row.append(key);
             } else if (language == 'ru' && state.case == "upperCase") {
                 key.innerText = keyData[i][j].ru.upperCase;
-                keyboard__row.append(key);
             }
+            keyboard__row.append(key);
         }
+        
         keyboard.append(keyboard__row);
     }
 }
 renderKeyboard();
 
-let addLightKey = () => {
+const addLightKey = () => {
     document.addEventListener('keydown', (e) => {
+        e.preventDefault();
         let activeKey = document.querySelector(`.${e.code}`);
         activeKey.classList.add('key_active');
     })
 }
 addLightKey();
 
-let removeLightKey = () => {
+const removeLightKey = () => {
     document.addEventListener('keyup', (e) => {
+        e.preventDefault();
         let activeKey = document.querySelector(`.${e.code}`);
-        activeKey.classList.remove('key_active');
+        e.code == "CapsLock" ? null :  activeKey.classList.remove('key_active');
+       
     })
 }
 removeLightKey();
 
 
 
-let isKeyActive = () => {
-    
+const switchLanguage = () => {
     document.addEventListener('keydown', (e) => {
-        pressedKeys.push(e.code);
-       console.log(pressedKeys)
-    })
-    document.addEventListener('keyup', (e) => {
-        pressedKeys.pop();
-       console.log(pressedKeys)
-    })
-    
-}
-
-let switchLanguage = () => {
-    document.addEventListener('keyup', (e) => {
+        e.preventDefault();
         if (e.code == "ShiftLeft" || e.code == "AltLeft") {
-            isKeyActive();
+            pressedKeys.push(e.code);
             if (pressedKeys.includes('ShiftLeft') && pressedKeys.includes("AltLeft")) {
                 state.language == "ru" ? state.language = "eng" : state.language = "ru";
                 renderKeyboard()
-                pressedKeys = [];
-                console.log(state.language);
+                let shift = document.querySelector('.ShiftLeft');
+                shift.classList.add('key_active');
+                let alt = document.querySelector('.AltLeft');
+                alt.classList.add('key_active');
+
             }
         }
     })
+    document.addEventListener('keyup', (e) => {
+        e.preventDefault();
+        if (e.code == "ShiftLeft" || e.code == "AltLeft") {
+            pressedKeys.pop();
+        }
+    })
+    
 }
 switchLanguage();
 
 
+const shiftActive = () => {
+    document.addEventListener('keydown', (e) => {
+        if (e.code == "ShiftLeft" || e.code == "ShiftRight") {
+            if (state.caps == false) {
+                state.case = "upperCase"
+                renderKeyboard();
+                let shift = document.querySelector(".ShiftLeft");
+                shift.classList.add("key_active");
+            } else {
+                state.case = "lowerCase"
+                renderKeyboard();
+                let shift = document.querySelector(".ShiftLeft");
+                shift.classList.add("key_active");
+                let caps = document.querySelector(".CapsLock");
+                caps.classList.add("key_active");
+            }
+            
+        }
+    })
+    document.addEventListener('keyup', (e) => {
+        if (e.code == "ShiftLeft" || e.code == "ShiftRight") {
+            if (state.caps == false) {
+                state.case = "lowerCase"
+                renderKeyboard();
+            } else {
+                state.case = "upperCase";
+                renderKeyboard();
+                let caps = document.querySelector(".CapsLock");
+                caps.classList.add("key_active");
+            }
+            
+        }
+    })
+}
+shiftActive();
 
+const capsActive = () => {
+    document.addEventListener('keydown', (e) => {
+        if (e.code == "CapsLock") {
+            state.case == "lowerCase" ? state.case = "upperCase" : state.case = "lowerCase";
+            renderKeyboard()
+            state.caps == false ? state.caps = true : state.caps = false;
+            let caps = document.querySelector('.CapsLock');
+            if (state.caps == true) {
+                caps.classList.add("key_active")
+            } else {
+                caps.classList.remove("key_active")
+            }
+        }
+    })
+}
+
+capsActive()
 
 
