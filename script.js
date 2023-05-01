@@ -1,5 +1,4 @@
 const keyData = [
-  // first row
   [
     {
       keyCode: 'Backquote',
@@ -212,7 +211,6 @@ const keyData = [
       },
     },
   ],
-  // second row
   [
     {
       keyCode: 'Tab',
@@ -440,7 +438,6 @@ const keyData = [
       },
     },
   ],
-  // third row
   [
     {
       keyCode: 'CapsLock',
@@ -638,7 +635,6 @@ const keyData = [
       },
     },
   ],
-  // fourth row
   [
     {
       keyCode: 'ShiftLeft',
@@ -836,7 +832,6 @@ const keyData = [
       },
     },
   ],
-  // fifth row
   [
     {
       keyCode: 'ControlLeft',
@@ -993,16 +988,13 @@ const state = {
   shift: false,
 };
 
-// create wrapper
 const wrapper = document.createElement('div');
 wrapper.className = 'wrapper';
 
-// create textarea
 const textarea = document.createElement('textarea');
 textarea.className = 'textarea';
 wrapper.append(textarea);
 
-// create keyboard body
 const keyboard = document.createElement('div');
 keyboard.className = 'keyboard';
 wrapper.append(keyboard);
@@ -1030,7 +1022,7 @@ const keyboardClick = (e) => {
         textarea.value += (' ');
         position += 1;
         textarea.selectionStart = position
-        console.log(`позиция при space ${position}`)
+        textarea.selectionEnd = position;
         break;
       case 'Backspace':
         if (position > 0) {
@@ -1038,29 +1030,31 @@ const keyboardClick = (e) => {
         }
         position > 0 ? position -= 1 : null;
         textarea.selectionStart = position;
-        console.log(textarea.selectionStart)
+        textarea.selectionEnd = position;
         break;
       case 'Tab':
         textarea.value = textarea.value.slice(0, position) + "   " + textarea.value.slice(position, textarea.value.length);
         position += 3;
         textarea.selectionStart = position;
-        console.log(`позиция при таб ${position}`)
+        textarea.selectionEnd = position;
         break;
       case 'Delete':
         textarea.value = textarea.value.slice(0, position) + textarea.value.slice(position + 1, textarea.value.length);
         textarea.selectionStart = position;
-        console.log(`позиция при делит ${position}`)
+        textarea.selectionEnd = position;
         break;
       case 'Enter':
         textarea.value += '\n';
         position += 1
         textarea.selectionStart = position;
-        console.log(`позиция при ентер ${position}`)
+        textarea.selectionEnd = position;
       break;
     }
   } else {
     textarea.value += (e.target.innerText);
     position += 1
+    textarea.selectionStart = position;
+    textarea.selectionEnd = position;
   }
 }
 
@@ -1121,7 +1115,6 @@ const addLightKey = () => {
           position += 1;
           textarea.selectionStart = position;
           textarea.selectionEnd = position;
-          console.log(`позиция при space ${position}`)
           break;
         case 'Backspace':
           if (position > 0) {
@@ -1130,27 +1123,23 @@ const addLightKey = () => {
           position > 0 ? position -= 1 : null;
           textarea.selectionStart = position;
           textarea.selectionEnd = position;
-          console.log(`позиция при бэкспейс ${position}`)
           break;
         case 'Tab':
           textarea.value = textarea.value.slice(0, position) + "   " + textarea.value.slice(position, textarea.value.length);
           position += 3;
           textarea.selectionStart = position;
           textarea.selectionEnd = position;
-          console.log(`позиция при таб ${position}`)
           break;
         case 'Delete':
           textarea.value = textarea.value.slice(0, position) + textarea.value.slice(position + 1, textarea.value.length);
           textarea.selectionStart = position;
           textarea.selectionEnd = position;
-          console.log(`позиция при делит ${position}`)
           break;
         case 'Enter':
           textarea.value += '\n';
           position += 1
           textarea.selectionStart = position;
           textarea.selectionEnd = position;
-          console.log(`позиция при ентер ${position}`)
         break;
       }
     } else {
@@ -1254,13 +1243,9 @@ capsActive();
 const textareaEdit = () => {
   textarea.addEventListener('click', (e) => {
     position = textarea.selectionStart;
-    console.log(`позиция при клике - ${position}`)
-    console.log(`позиция start - ${textarea.selectionStart}`)
-    console.log(`позиция end - ${textarea.selection}`)
   })
   textarea.addEventListener('change', (e) => {
     position = textarea.selectionStart;
-    console.log(`позиция при изменении - ${position}`)
   })
 }
 textareaEdit()
