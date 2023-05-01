@@ -979,6 +979,12 @@ const keyData = [
 const blackKeysData = [
   'Backspace', 'Tab', 'Del', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt', '▲', '◄', '►', '▼',
 ];
+const pressedKeys = [];
+const ignoreKeys = [
+  'Backspace', 'Tab', 'Del', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt', 'Space',
+];
+
+let position = 0;
 
 const state = {
   language: 'eng',
@@ -1007,10 +1013,56 @@ description.className = 'description';
 description.innerText = 'LShift + LAlt для смены языка\n\n Система - Windows';
 wrapper.append(description);
 
-const pressedKeys = [];
-const ignoreKeys = [
-  'Backspace', 'Tab', 'Del', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt', 'Space',
-];
+const keyboardClick = (e) => {
+  if (e.target.innerText == 'CapsLock') {
+    state.caps == false ? state.caps = true : state.caps = false;
+    renderKeyboard();
+    const caps = document.querySelector('.CapsLock');
+    if (state.caps == true) {
+      caps.classList.add('key_active');
+    } else {
+      caps.classList.remove('key_active');
+    }
+  }
+  if (ignoreKeys.includes(e.target.innerText)) {
+    switch (e.target.innerText) {
+      case 'Space':
+        textarea.value += (' ');
+        position += 1;
+        textarea.selectionStart = position
+        console.log(`позиция при space ${position}`)
+        break;
+      case 'Backspace':
+        if (position > 0) {
+          textarea.value = textarea.value.slice(0, position - 1) + textarea.value.slice(position, textarea.value.length)
+        }
+        position > 0 ? position -= 1 : null;
+        textarea.selectionStart = position;
+        console.log(textarea.selectionStart)
+        break;
+      case 'Tab':
+        textarea.value = textarea.value.slice(0, position) + "   " + textarea.value.slice(position, textarea.value.length);
+        position += 3;
+        textarea.selectionStart = position;
+        console.log(`позиция при таб ${position}`)
+        break;
+      case 'Delete':
+        textarea.value = textarea.value.slice(0, position) + textarea.value.slice(position + 1, textarea.value.length);
+        textarea.selectionStart = position;
+        console.log(`позиция при делит ${position}`)
+        break;
+      case 'Enter':
+        textarea.value += '\n';
+        position += 1
+        textarea.selectionStart = position;
+        console.log(`позиция при ентер ${position}`)
+      break;
+    }
+  } else {
+    textarea.value += (e.target.innerText);
+    position += 1
+  }
+}
 
 const renderKeyboard = () => {
   keyboard.innerHTML = '';
@@ -1045,7 +1097,11 @@ const renderKeyboard = () => {
       } else if (language == 'ru') {
         key.innerText = keyData[i][j].ru.caps;
       }
+      key.addEventListener('click', (e) => {
+        keyboardClick(e);
+      });
       keyboard__row.append(key);
+      
     }
     keyboard.append(keyboard__row);
   }
@@ -1059,9 +1115,49 @@ const addLightKey = () => {
     const activeKey = document.querySelector(`.${e.code}`);
     activeKey.classList.add('key_active');
     if (ignoreKeys.includes(activeKey.innerText)) {
-
+      switch (e.code) {
+        case 'Space':
+          textarea.value += (' ');
+          position += 1;
+          textarea.selectionStart = position;
+          textarea.selectionEnd = position;
+          console.log(`позиция при space ${position}`)
+          break;
+        case 'Backspace':
+          if (position > 0) {
+            textarea.value = textarea.value.slice(0, position - 1) + textarea.value.slice(position, textarea.value.length)
+          }
+          position > 0 ? position -= 1 : null;
+          textarea.selectionStart = position;
+          textarea.selectionEnd = position;
+          console.log(`позиция при бэкспейс ${position}`)
+          break;
+        case 'Tab':
+          textarea.value = textarea.value.slice(0, position) + "   " + textarea.value.slice(position, textarea.value.length);
+          position += 3;
+          textarea.selectionStart = position;
+          textarea.selectionEnd = position;
+          console.log(`позиция при таб ${position}`)
+          break;
+        case 'Delete':
+          textarea.value = textarea.value.slice(0, position) + textarea.value.slice(position + 1, textarea.value.length);
+          textarea.selectionStart = position;
+          textarea.selectionEnd = position;
+          console.log(`позиция при делит ${position}`)
+          break;
+        case 'Enter':
+          textarea.value += '\n';
+          position += 1
+          textarea.selectionStart = position;
+          textarea.selectionEnd = position;
+          console.log(`позиция при ентер ${position}`)
+        break;
+      }
     } else {
       textarea.value += (activeKey.innerText);
+      position += 1
+      textarea.selectionStart = position;
+      textarea.selectionEnd = position;
     }
   });
 };
@@ -1102,6 +1198,7 @@ switchLanguage();
 
 const shiftActive = () => {
   document.addEventListener('keydown', (e) => {
+    e.preventDefault()
     if (e.code == 'ShiftLeft' || e.code == 'ShiftRight') {
       state.shift == false ? state.shift = true : null;
       if (state.caps == false) {
@@ -1152,3 +1249,20 @@ const capsActive = () => {
 };
 
 capsActive();
+
+
+const textareaEdit = () => {
+  textarea.addEventListener('click', (e) => {
+    position = textarea.selectionStart;
+    console.log(`позиция при клике - ${position}`)
+    console.log(`позиция start - ${textarea.selectionStart}`)
+    console.log(`позиция end - ${textarea.selection}`)
+  })
+  textarea.addEventListener('change', (e) => {
+    position = textarea.selectionStart;
+    console.log(`позиция при изменении - ${position}`)
+  })
+}
+textareaEdit()
+
+

@@ -40,6 +40,16 @@
     transition: all 0.2s;
 }
 
+.key:hover {
+    background-color: #885899;
+    transition: all 0.2s;
+}
+
+.key:active {
+    background-color: #78c3ff;
+    border-radius: 10px;
+}
+
 .key_black {
     background-color: #11192b;
     color: white;
@@ -52,10 +62,7 @@
     transition: all 0.2s;
 }
 
-.key:hover {
-    background-color: #885899;
-    transition: all 1s;
-}
+
 
 .Backspace {
     width: 150px;
