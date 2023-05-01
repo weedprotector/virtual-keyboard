@@ -43,6 +43,7 @@
 .key_black {
     background-color: #11192b;
     color: white;
+    transition: all 0.2s;
 }
 
 .key_active {
